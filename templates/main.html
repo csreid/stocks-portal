@@ -1,0 +1,39 @@
+<!DOCYTYPE html>
+	<style type="text/css">
+		table, th, td {
+			border: 1px solid black;
+			table-layout:fixed;
+			display: table-cell;
+		}
+	</style>
+	<head>
+		<title>{{ title }}</title>
+	</head>
+
+	<body>
+		<h1>Welcome!!</h1>
+		<h2>The date and time on the server is {{ time }}</h2>
+		<h2 id='count-holder'>Counting quotes...</h2>
+		<h2 id='table-header'>Grabbing the most recent...</h2>
+		
+	</body>
+</html>
+<script src={{ url_for('static', filename='jquery.js') }}></script>
+<script>
+	$(document).ready(function(){
+		$.getJSON('/quoteCount', success=function(data){
+			$('#count-holder').html("The database currently holds " + data.count + " stock quotes.")
+		});
+		$.getJSON('/mostRecent', {"count":10}, success=function(data){
+			$('#table-header').html(
+				"<h3>Ten Most Recent:</h3><table><tr><th>Symbol ID</th><th>Price</th><th>Pulled</th></tr>"
+			)
+			data.forEach(function(each){
+				$('#table-header').append(
+					"<tr><td> " + each[0] + " </td><td> " + each[1] + " </td><td> " + each[2] + " </td></tr></table>"
+				);
+			});
+		});
+	});
+</script>
+
