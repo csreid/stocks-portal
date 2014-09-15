@@ -1,10 +1,8 @@
 <!DOCYTYPE html>
 	<head>
 		<title>{{ title }}</title>
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 	</head>
 	<body>
 		<nav class="navbar navbar-inverse">
@@ -22,20 +20,14 @@
 				</ul>
 			</div>
 		</nav>
-		<div class = "container-fluid">
-			<div class="col-md-3 col-md-offset-2">
-				<label for="num" class="col-md-1 control-label" id="numLabel">Number:</label>
-				<input type="range" min=5 max=1000 class="form-control" id="num" value=10></input>
-			</div>
-			<div id='table-header' class='col-md-8 col-md-offset-2'>
-			</div>
-		</div>
+		<div id='table-header'></div>
+		
 	</body>
 </html>
-<script src="{{ url_for('static', filename='jquery.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src={{ url_for('static', filename='jquery.js') }}></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script>
-	function showQuotes(num){
+	function showCompanies(num){
 		var tableContainer = $('#table-header');
 		tableContainer.html("");
 		var table = document.createElement("table")
@@ -62,7 +54,7 @@
 		table.appendChild(headers);
 		tableContainer.append(table);
 		
-		$.getJSON('/mostRecent', {"count":num}, success=function(data){
+		$.getJSON('/getCompanies', {"count":num}, success=function(data){
 			data.forEach(function(each){
 				//create row:
 				var newRow = document.createElement("tr");
@@ -76,11 +68,18 @@
 				var newDateValue = document.createTextNode(each[0]);
 				var newSymbolValue = document.createTextNode(each[1]);
 				var newPriceValue = document.createTextNode(each[2]);
+	
+				var newDateLink = document.createElement("a");
+				//console.log("0: " + each[0]); //name
+				//console.log("1: " + each[1]); //symbol
+				//console.log("2: " + each[2]); // exchange
+				newDateLink.href = "/company?symbol=" + each[1];
 
 				//add fields to cells
-				newDate.appendChild(newDateValue);
+				newDateLink.appendChild(newDateValue);
 				newPrice.appendChild(newPriceValue);
 				newSymbol.appendChild(newSymbolValue);
+				newDate.appendChild(newDateLink)
 
 				//add cells to row
 				newRow.appendChild(newDate);
@@ -90,15 +89,10 @@
 				//add row to table
 				table.appendChild(newRow);
 			});
-		});
-	
+		});	
 	}
+	
 	$(document).ready(function(){
-		showQuotes(10);
-		$('#numLabel').append(" 10");
-	});
-	$('#num').change(function(){
-		showQuotes(this.value);
-		$('#numLabel').html("Number: " + this.value);
+		showCompanies(10);
 	});
 </script>
