@@ -74,8 +74,8 @@ def mostRecent():
 	""" % int(limit))
 	results = cursor.fetchall()
 	rowarray_list = []
-	for row in results:
-		t = (row[0], row[1], row[2].strftime("%Y-%m-%d %H:%M:%S"))
+	for row in reversed(results):
+		t = (row[0], row[1], row[2].strftime("%Y-%m-%d %H:%M"))
 		rowarray_list.append(t)
 	j = json.dumps(rowarray_list)
 	return j
