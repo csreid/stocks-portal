@@ -5,8 +5,6 @@ import json
 import collections
 
 app=Flask(__name__)
-db = MySQLdb.connect("localhost", "root", "", "stock_data")
-cursor = db.cursor()
 
 @app.route("/")
 def index():
@@ -21,28 +19,32 @@ def index():
 
 @app.route("/company")
 def company():
-		symbol=request.args.get('symbol')
-		now = datetime.datetime.now()
-		timeString = now.strftime("%Y-%m-%d")
-		cursor.execute("""
-				select symbol, name, exchange
-				from companies
-				where symbol='%s'
-		""" % symbol)
-		row = cursor.fetchone()
-		
-		templateData={
-				'title': "Company View",
-				'symbol': symbol,
-				'name': row[1],
-				'exchange': row[2],
-				'time':timeString
-		}
-		return render_template('company.html', **templateData)
+	db = MySQLdb.connect("localhost", "root", "", "stock_data")
+	cursor = db.cursor()
+	symbol=request.args.get('symbol')
+	now = datetime.datetime.now()
+	timeString = now.strftime("%Y-%m-%d")
+	cursor.execute("""
+			select symbol, name, exchange
+			from companies
+			where symbol='%s'
+	""" % symbol)
+	row = cursor.fetchone()
+	
+	templateData={
+			'title': "Company View",
+			'symbol': symbol,
+			'name': row[1],
+			'exchange': row[2],
+			'time':timeString
+	}
+	return render_template('company.html', **templateData)
 
 
 @app.route("/companies")
 def companies():
+		db = MySQLdb.connect("localhost", "root", "", "stock_data")
+		cursor = db.cursor()
 		now = datetime.datetime.now()
 		timeString = now.strftime("%Y-%m-%d")
 		templateData={
@@ -53,12 +55,16 @@ def companies():
 
 @app.route("/quoteCount")
 def getCount():
+	db = MySQLdb.connect("localhost", "root", "", "stock_data")
+	cursor = db.cursor()
 	cursor.execute("select count(*) from quotes limit 10")
 	count = cursor.fetchone()[0]
 	return '{"count": ' + str(count) + '}'
 
 @app.route("/mostRecent")
 def mostRecent():
+	db = MySQLdb.connect("localhost", "root", "", "stock_data")
+	cursor = db.cursor()
 	limit = request.args.get('count')
 	cursor.execute("""
 		select symbol, price, timestamp 
@@ -76,6 +82,8 @@ def mostRecent():
 
 @app.route("/getCompanies")
 def getCompanies():
+		db = MySQLdb.connect("localhost", "root", "", "stock_data")
+		cursor = db.cursor()
 		cursor.execute("""
 				select name, symbol, exchange
 				from companies
@@ -90,6 +98,8 @@ def getCompanies():
 
 @app.route("/getCompanyBySymbol")
 def getCompanyBySymbol():
+		db = MySQLdb.connect("localhost", "root", "", "stock_data")
+		cursor = db.cursor()
 		name = request.args.get('symbol')
 		cursor.execute("""
 				select *
@@ -103,6 +113,8 @@ def getCompanyBySymbol():
 
 @app.route("/getQuotesBySymbol")
 def getQuotesBySymbol():
+	db = MySQLdb.connect("localhost", "root", "", "stock_data")
+	cursor = db.cursor()
 	symbol = request.args.get('symbol')
 	num = request.args.get('num')
 	cursor.execute("""select timestamp, price from quotes, companies where quotes.symbol=companies.id and companies.symbol='{0}' order by timestamp limit {1}""".format(symbol, num))
