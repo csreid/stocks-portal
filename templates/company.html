@@ -41,6 +41,10 @@
 		<h4>{{ symbol }}</h4>
 		<h4>{{ exchange }}</h4>
 
+		<div class="col-md-3">
+			<input type="range" min=5 max=200 class="form-control" id="num" value=10></input>
+		</div>
+
 		<div>
 			<canvas id="chart" width=1000 height=500></canvas>
 		</div>
@@ -49,12 +53,31 @@
 <script src={{ url_for('static', filename='jquery.js') }}></script>
 <script src='./static/js/require.js'></script>
 <script>
-$(document).ready(function(){
-	require(['static/js/Charts/Chart.js'], function(Chart){
-		var ctx = document.getElementById("chart").getContext("2d");
-		var data = $.getJSON('/getQuotesBySymbol', {"symbol":"{{ symbol }}", "num":"10"}, function(data){
-			var newChart = new Chart(ctx).Line(data);
-		});
+require(['static/js/Charts/Chart.js'], function(Chart){
+	var newChart;
+	var count;
+	var ctx;
+	$(document).ready(function(){
+		require(['static/js/Charts/Chart.js'], function(Chart){
+			ctx = document.getElementById("chart").getContext("2d");
+			count = $('#num').val();
+			data = $.getJSON('/getQuotesBySymbol', {"symbol":"{{ symbol }}", "num":10}, function(data){
+				newChart = new Chart(ctx).Line(data);
+			});
+		});	
+	});
+
+	$('#num').change(function(){
+			data = []
+			newChart.destroy();
+			ctx = document.getElementById("chart").getContext("2d");
+			count = $('#num').val();
+			data = $.getJSON('/getQuotesBySymbol', {"symbol":"{{ symbol }}", "num":count}, function(data){
+				ctx.canvas.width=1000;
+				ctx.canvas.height=500;
+				newChart = new Chart(ctx).Line(data);
+				newChart.resize()
+			});
 	});
 });
 </script>
