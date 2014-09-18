@@ -105,17 +105,33 @@ def getCompanyBySymbol():
 def getQuotesBySymbol():
 	symbol = request.args.get('symbol')
 	num = request.args.get('num')
-	cursor.execute("""select timestamp, price from quotes, companies where quotes.symbol=companies.id and companies.symbol='{0}' order by timestamp limit {1}""".format(symbol, num))
+	cursor.execute("""select timestamp, price from quotes, companies where quotes.symbol=companies.id and companies.symbol='{0}' order by timestamp desc limit {1}""".format(symbol, num))
 	results = cursor.fetchall()
 	data = []
 	labels = []
 	for row in results:
 		labels.append(row[0].strftime("%Y-%m-%d %H:%M:%S"))
 		data.append(row[1])
+	datasets1 = {}
+	datasets1['labels'] = labels
+	datasets1['datasets']=[data]
+	datasets1['label'] = "Test"
+	datasets1['fillColor'] = "rgba(220,220,220,0.2)"
+	datasets1['strokeColor'] = "rgba(220, 220, 220, 1)"
+	datasets1['pointColor'] = "rgba(220, 220, 220, 1)"
+	datasets1['pointStrokeColor'] = "#fff"
+	datasets1['pointHighlightFill'] = "#fff"
+	datasets1['pointHighlightFillStroke'] = "rgba(220, 220, 220, 1"
+	datasets1['data']=data
+
+	datasets = [datasets1]
+
 	toReturn = {}
-	toReturn['labels'] = labels
-	toReturn['datasets']=[data]
+	toReturn['labels']=labels
+	toReturn['datasets']=datasets
+
 	j = json.dumps(toReturn)
+	
 	return j
 
 if __name__ == "__main__":

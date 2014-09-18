@@ -8,15 +8,25 @@
 	</style>
 	<head>
 		<title>{{ title }}</title>
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	</head>
 	<body>
 		<nav class="navbar navbar-inverse">
-			<div class="navbar-header">
-				<span class="navbar-brand">
-					{{ time }}
-				</span>
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<span class="navbar-brand">
+						{{ time }}
+					</span>
+				</div>
 			</div>
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class = "nav navbar-nav">
@@ -32,15 +42,19 @@
 		<h4>{{ exchange }}</h4>
 
 		<div>
-			<canvas id="chart"></canvas>
+			<canvas id="chart" width=1000 height=500></canvas>
 		</div>
 	</body>
 </html>
 <script src={{ url_for('static', filename='jquery.js') }}></script>
-<script src='./static/js/Charts/Chart.js'></script>
+<script src='./static/js/require.js'></script>
 <script>
-	var ctx = $("#chart").get(0).getContext("2d");
-	var newChart = new Chart(ctx);
-	var data = $.getJSON('/getQuotesBySymbol', {"symbol":"{{ symbol }}", "num":"10"})
-	new Chart(ctx).Line(data)
+$(document).ready(function(){
+	require(['static/js/Charts/Chart.js'], function(Chart){
+		var ctx = document.getElementById("chart").getContext("2d");
+		var data = $.getJSON('/getQuotesBySymbol', {"symbol":"{{ symbol }}", "num":"10"}, function(data){
+			var newChart = new Chart(ctx).Line(data);
+		});
+	});
+});
 </script>
