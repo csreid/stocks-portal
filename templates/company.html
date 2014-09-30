@@ -46,7 +46,7 @@
 		</div>
 
 		<div>
-			<canvas id="chart" width=1000 height=500></canvas>
+			<canvas id="chart" width=380 height=240></canvas>
 		</div>
 	</body>
 </html>
@@ -73,8 +73,8 @@ require(['static/js/Charts/Chart.js'], function(Chart){
 			ctx = document.getElementById("chart").getContext("2d");
 			count = $('#num').val();
 			data = $.getJSON('/getQuotesBySymbol', {"symbol":"{{ symbol }}", "num":count}, function(data){
-				ctx.canvas.width=1000;
-				ctx.canvas.height=500;
+				ctx.canvas.width=380;
+				ctx.canvas.height=240;
 				newChart = new Chart(ctx).Line(data);
 				newChart.resize()
 			});

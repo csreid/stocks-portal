@@ -129,8 +129,8 @@ def getQuotesBySymbol():
 	datasets1['datasets']=[data]
 	datasets1['label'] = "Test"
 	datasets1['fillColor'] = "rgba(220,220,220,0.2)"
-	datasets1['strokeColor'] = "rgba(220, 220, 220, 1)"
-	datasets1['pointColor'] = "rgba(220, 220, 220, 1)"
+	datasets1['strokeColor'] = "rgba(0,0,0, 1)"
+	datasets1['pointColor'] = "rgba(0,0,0, 1)"
 	datasets1['pointStrokeColor'] = "#fff"
 	datasets1['pointHighlightFill'] = "#fff"
 	datasets1['pointHighlightFillStroke'] = "rgba(220, 220, 220, 1"
